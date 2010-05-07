@@ -92,8 +92,7 @@ use SDL::Mixer::MixMusic;
 use SDL::Joystick;
 use SDL::Mouse;
 use SDL::Image;
-use SDL::TTF ':all';
-use SDL::TTF::Font;
+use SDLx::TTF;
 
 use Carp;
 
@@ -1469,7 +1468,7 @@ sub Advance {
 sub Draw {
   my $self = shift;
 
-  SDL::TTF::print_text( $::App, $self->{rect}->x, $self->{rect}->y, "Time left: " . ($::GamePause / 100) );
+  SDLx::TTF::print_text( $::App, $self->{rect}->x, $self->{rect}->y, "Time left: " . ($::GamePause / 100) );
 
 }
 
@@ -1500,7 +1499,7 @@ sub new {
 sub Draw {
   my $self = shift;
 
-  SDL::TTF::print_text( $::App, $self->{rect}->x, $self->{rect}->y, &GameTimer::GetFramesPerSecond() );
+  SDLx::TTF::print_text( $::App, $self->{rect}->x, $self->{rect}->y, &GameTimer::GetFramesPerSecond() );
 
 }
 
@@ -2336,7 +2335,7 @@ sub Draw {
   if ($self->{selected} or $self->{filled}) {
     SDL::Video::fill_rect($::App, $self->{rect}, $self->{fillcolor});
   }
-  SDL::TTF::print_text( $::App,$self->{x} + 5 +$::ScreenMargin, $self->{y} + $::ScreenMargin, $self->{text});
+  SDLx::TTF::print_text( $::App,$self->{x} + 5 +$::ScreenMargin, $self->{y} + $::ScreenMargin, $self->{text});
 
 }
 
@@ -2812,7 +2811,7 @@ sub TextWidth {
   if (defined(&SDL::App::SDL_TEXTWIDTH)) {
     SDL::App::SDL_TEXTWIDTH(@_);   # perl-sdl-1.x
   } else {
-    SDL::TTF::SDL_TEXTWIDTH(@_); # perl-sdl-2.x
+    SDLx::TTF::SDL_TEXTWIDTH(@_); # perl-sdl-2.x
   }
 }
 
@@ -3287,7 +3286,7 @@ sub DrawLevelIndicator {
   
   $self->{levelIndicatorRect} = SDL::Rect->new($x, $y, 100, 32) unless $self->{levelIndicatorRect};
   SDL::Video::fill_rect($::App, $self->{levelIndicatorRect}, SDL::Color->new(0, 0, 0) );
-  SDL::TTF::print_text( $::App, $x, $y + 3, 'Level ' . ($self->{level}+1) );
+  SDLx::TTF::print_text( $::App, $x, $y + 3, 'Level ' . ($self->{level}+1) );
 
 }
 
@@ -3569,9 +3568,9 @@ sub DrawLevelIndicator {
 	SDL::Video::blit_surface($::LevelIndicatorSurface2, SDL::Rect->new($x, $y, $::LevelIndicatorSurface2->w, $::LevelIndicatorSurface2->h),
 	                         $::App,                    SDL::Rect->new($x, $y, $::LevelIndicatorSurface2->w, $::LevelIndicatorSurface2->h));
   SDL::Video::blit_surface($::LevelIndicatorSurface, SDL::Rect->new(0, 0, 130 * $self->{leveladvance} / 17, 30), $::App, SDL::Rect->new($x, $y, 130 * $self->{leveladvance} / 17, 30));
-  SDL::TTF::print_text( $::App, $x + 25, $y + 3, 'Level ' . ($self->{level}+1) );
+  SDLx::TTF::print_text( $::App, $x + 25, $y + 3, 'Level ' . ($self->{level}+1) );
 
-  SDL::TTF::print_text( $::App, $x, $y + 40, sprintf('spd: %d/%d', $::GameSpeed * 100, $self->{leveldesc}->{spawndelay}) ) if $self->{scoreBoardHeight} >= 64;
+  SDLx::TTF::print_text( $::App, $x, $y + 40, sprintf('spd: %d/%d', $::GameSpeed * 100, $self->{leveldesc}->{spawndelay}) ) if $self->{scoreBoardHeight} >= 64;
 
 }
 
@@ -3598,7 +3597,7 @@ sub CreateLevelNumberSurface {
   $::GlossyFont->use();
   $w = &::TextWidth("Level $level");
   $surface = new SDL::Surface(SDL_SWSURFACE(), $w+6, 48, 32);
-  SDL::TTF::print_text( $surface, 3, 3, "Level $level" );
+  SDLx::TTF::print_text( $surface, 3, 3, "Level $level" );
 
   $::ScoreFont->use();
   return $surface;
@@ -3893,7 +3892,7 @@ sub DisplayMessage {
     $adv += $advance;
     $len = int($adv / 5);
 
-    SDL::TTF::print_text(   $::App,$x, $y, substr($message, 0, $len) );
+    SDLx::TTF::print_text(   $::App,$x, $y, substr($message, 0, $len) );
 
     $::App->sync();
     last if $len > length($message) + 15;
@@ -3980,13 +3979,13 @@ sub DrawScoreBoard {
   $x = 10;
   $y = $::ScreenHeight + 2 * $::ScreenMargin + 5;
   if ($self->{anim} < 1) {
-	  SDL::TTF::print_text(   $::Background, $x, $y, "Press F to fast forward" );
+	  SDLx::TTF::print_text(   $::Background, $x, $y, "Press F to fast forward" );
 
-	  SDL::TTF::print_text(   $::App, $x, $y, "Press F to fast forward" );
+	  SDLx::TTF::print_text(   $::App, $x, $y, "Press F to fast forward" );
 
   } return;
   SDL::Video::fill_rect($::App, SDL::Rect->new(0, $y, $::PhysicalScreenWidth, $::PhysicalScreenHeight - $y), SDL::Color->new(0, 0, 0) );
-  SDL::TTF::print_text( $::App, $x, $y, $self->{recordpointer} );
+  SDLx::TTF::print_text( $::App, $x, $y, $self->{recordpointer} );
 
 }
 
@@ -4024,7 +4023,7 @@ sub ShowTooltip {
   $rect = SDL::Rect->new(0, -$y, $::PhysicalScreenWidth, $::PhysicalScreenWidth - $y );
   SDL::Video::fill_rect( $::Background,$rect, SDL::Color->new(0,0,0) );
   foreach (@lines) {
-	  SDL::TTF::print_text(   $::Background, 10, $y, $_ ) if $y + $yinc < $::PhysicalScreenHeight;
+	  SDLx::TTF::print_text(   $::Background, 10, $y, $_ ) if $y + $yinc < $::PhysicalScreenHeight;
 
     $y += $yinc;
   }
@@ -4660,11 +4659,11 @@ sub Run {
   $self->ResetGame();
   $::ScoreFont->use();
   ($y, $yinc) = ($::ScreenHeight + 15, 20);
-  SDL::TTF::print_text( $::Background, 10, $y += $yinc, "Pang Zero $::Version (C) 2006 by UPi (upi\@sourceforge.net)" ) if $y + $yinc * 2 < $::PhysicalScreenHeight;
+  SDLx::TTF::print_text( $::Background, 10, $y += $yinc, "Pang Zero $::Version (C) 2006 by UPi (upi\@sourceforge.net)" ) if $y + $yinc * 2 < $::PhysicalScreenHeight;
 
-  SDL::TTF::print_text( $::Background, 10, $y += $yinc, "Use cursor keys to navigate menu, Enter to select" )           if $y + $yinc * 2 < $::PhysicalScreenHeight;
+  SDLx::TTF::print_text( $::Background, 10, $y += $yinc, "Use cursor keys to navigate menu, Enter to select" )           if $y + $yinc * 2 < $::PhysicalScreenHeight;
 
-  SDL::TTF::print_text( $::Background, 10, $y += $yinc, "P pauses the game, Esc quits" )                                if $y + $yinc * 2 < $::PhysicalScreenHeight;
+  SDLx::TTF::print_text( $::Background, 10, $y += $yinc, "P pauses the game, Esc quits" )                                if $y + $yinc * 2 < $::PhysicalScreenHeight;
 
   SDL::Video::blit_surface($::Background, SDL::Rect->new(0, 0, $::App->w, $::App->h), $::App, SDL::Rect->new(0, 0, $::App->w, $::App->h));
   
@@ -4914,9 +4913,9 @@ sub Initialize {
 
   $Background = SDL::Surface->new(( &IsMicrosoftWindows ? SDL_SWSURFACE : SDL_HWSURFACE ), $App->w, $App->h, 16);
   $Background = SDL::Video::display_format($Background);
-  $ScoreFont  = SDL::TTF::Font->new("$::DataDir/DejaVuSans-Bold.ttf", 18);
-  $MenuFont   = SDL::TTF::Font->new("$::DataDir/DejaVuSans-Bold.ttf", 18);
-  $GlossyFont = SDL::TTF::Font->new("$::DataDir/DejaVuSans-Bold.ttf", 18);
+  $ScoreFont  = SDLx::TTF->new("$DataDir/brandybun3.png");
+  $MenuFont   = SDLx::TTF->new("$::DataDir/font2.png");
+  $GlossyFont = SDLx::TTF->new("$::DataDir/glossyfont.png");
 
   &LoadSurfaces();
   &LoadSounds();
